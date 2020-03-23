@@ -3,8 +3,8 @@ import dash_html_components as html
 import dash_core_components as dcc
 from dash.dependencies import Input, Output, State
 
-from covidscholar_web.view import footer_html, query_helpers_html, results_html, divider_html
-import covidscholar_web.search_abstracts as search_abstracts
+from covidscholar_web.view import footer_html, query_helpers_html, results_html, display_all_html
+import covidscholar_web.search as search
 from covidscholar_web.constants import *
 
 external_scripts = [
@@ -108,11 +108,16 @@ app.layout = core_view
 def show_search_results(input_n_submit, text):
     # all_n_searches = [0 if n is None else n for n in [go_button_n_clicks, input_n_submit]]
     if input_n_submit is not None:
+        print("doing search")
         if text is None:
-            abstracts = search_abstracts.get_all()
+            results = display_all_html(search.get_all())
         else:
-            abstracts = search_abstracts.search_abstracts(text, limit=max_results)
-        results = results_html(abstracts)
+            abstracts = search.search_abstracts(text, limit=max_results)
+            results = results_html(abstracts)
+        return results
+    else:
+        print("doing get all")
+        results = display_all_html(search.get_all())
         return results
 
 # @app.callback([Output("modal{}".format(i), "style") for i in range(max_results)],

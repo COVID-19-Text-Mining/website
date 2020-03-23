@@ -67,6 +67,10 @@
     color: gray;
 }
 
+.msweb-is-midnightblue {
+    color: midnightblue;
+}
+
 
 details summary::-webkit-details-marker {
   display:none;

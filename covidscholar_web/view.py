@@ -25,15 +25,6 @@ def query_helpers_html():
         className="column is-full"
     )
 
-    # go_button = html.Div(
-    #     html.Button(
-    #         id="go-button",
-    #         children="Go!",
-    #         className="button is-link is-large is-fullwidth"
-    #     ),
-    #     className="column"
-    # )
-
     input_row = html.Div(
         html.Div(
             [input_box],
@@ -144,7 +135,7 @@ def footer_html():
     return footer_container
 
 
-def results_html(results_dict, max_results_shown=30, full_match_threshold=10):
+def results_html(results_dict, max_results_shown=30, full_match_threshold=10, show_all=False):
     """
     Get the html block for abstracts results from the list of results
 
@@ -160,7 +151,6 @@ def results_html(results_dict, max_results_shown=30, full_match_threshold=10):
     full_matches = results_dict["full"]
     all_matches = partial_matches + full_matches
 
-
     if len(all_matches) == 0:
         return no_results_html()
     else:
@@ -168,108 +158,116 @@ def results_html(results_dict, max_results_shown=30, full_match_threshold=10):
         full_matches = full_matches[:max_results_shown]
         n_remaining = max_results_shown - len(full_matches)
         partial_matches = partial_matches[:n_remaining]
-        if len(full_matches) >= full_match_threshold:
 
-            if len(full_matches) > full_match_threshold:
-                formatted_n_full_matches = f"{max_results_shown}+"
-            else:
-                formatted_n_full_matches = f"{len(full_matches)}"
+        if not show_all:
 
-            if len(full_matches) == 1:
-                overhead_label = html.Div(
-                    f"Found {formatted_n_full_matches} exact match",
-                    className=common_label_classname
-                )
-            else:
-                overhead_label = html.Div(
-                    f"Found {formatted_n_full_matches} exact matches",
-                    className=common_label_classname
-                )
+            if len(full_matches) >= full_match_threshold:
 
-            formatted_results = [format_result_html(
-                match) for match in full_matches]
-            paper_table = html.Table(
-                formatted_results,
-                className="table is-fullwidth is-bordered is-hoverable is-narrow is-striped",
-            )
-            results_elements = [paper_table]
+                if len(full_matches) > full_match_threshold:
+                    formatted_n_full_matches = f"{max_results_shown}+"
+                else:
+                    formatted_n_full_matches = f"{len(full_matches)}"
 
-        elif len(full_matches) < full_match_threshold:
-
-            if partial_matches:
-                partial_label = html.Div(
-                    f"({len(partial_matches)} additional partial matches included)",
-                    className="is-size-3 has-text-weight-semibold has-margin-bottom-10 has-margin-top-50"
-                )
-                partial_matches_results = [format_result_html(
-                    match) for match in partial_matches]
-                paper_table_partial = html.Table(
-                    partial_matches_results,
-                    className="table is-fullwidth is-bordered is-hoverable is-narrow is-striped",
-                )
-            else:
-                partial_label = html.Div(
-                    f"No additional partial matches found",
-                    className="is-size-3 has-text-weight-semibold has-margin-bottom-10 has-margin-top-50"
-                )
-                paper_table_partial = html.Div(children="")
-
-            if len(full_matches) == 0:
-                overhead_label = html.Div(
-                    [
-                        html.Div(
-                            f"Found no exact matches",
-                            className=common_label_classname
-                        ),
-                        html.Div(
-                            f"No exact matches found. Using partial matches only.",
-                            className="is-size-5 has-text-weight-bold"
-                        )
-                    ]
-                )
-                results_elements = [partial_label, paper_table_partial]
-            else:
                 if len(full_matches) == 1:
                     overhead_label = html.Div(
-                        f"Found {len(full_matches)} exact match",
+                        f"Found {formatted_n_full_matches} exact match",
                         className=common_label_classname
                     )
                 else:
                     overhead_label = html.Div(
-                        f"Found {len(full_matches)} exact matches",
+                        f"Found {formatted_n_full_matches} exact matches",
                         className=common_label_classname
                     )
-                full_label = html.Div(
-                    f"Exact matches",
-                    className=common_label_classname
-                )
-                full_matches_results = [format_result_html(
+
+                formatted_results = [format_result_html(
                     match) for match in full_matches]
-                paper_table_full = html.Table(
-                    full_matches_results,
+                paper_table = html.Table(
+                    formatted_results,
                     className="table is-fullwidth is-bordered is-hoverable is-narrow is-striped",
                 )
+                results_elements = [paper_table]
 
-                results_elements = [
-                    full_label, paper_table_full, partial_label, paper_table_partial]
+            elif len(full_matches) < full_match_threshold:
 
-        # entities_keys = []
-        # for e in valid_entity_filters:
-        #     color = entity_color_map[e]
-        #     entity_colored = html.Div(
-        #         e,
-        #         className=f"msweb-is-{color}-txt is-size-5 has-text-weight-bold",
-        #     )
-        #     entity_key = html.Div(
-        #         entity_colored, className=f"box has-padding-5"
-        #     )
-        #     entity_key_container = html.Div(
-        #         entity_key, className="flex-column is-narrow has-margin-5"
-        #     )
-        #     entities_keys.append(entity_key_container)
-        # entity_key_container = html.Div(
-        #     entities_keys, className="columns is-multiline has-margin-5"
-        # )
+                if partial_matches:
+                    partial_label = html.Div(
+                        f"({len(partial_matches)} additional partial matches included)",
+                        className="is-size-3 has-text-weight-semibold has-margin-bottom-10 has-margin-top-50"
+                    )
+                    partial_matches_results = [format_result_html(
+                        match) for match in partial_matches]
+                    paper_table_partial = html.Table(
+                        partial_matches_results,
+                        className="table is-fullwidth is-bordered is-hoverable is-narrow is-striped",
+                    )
+                else:
+                    partial_label = html.Div(
+                        f"No additional partial matches found",
+                        className="is-size-3 has-text-weight-semibold has-margin-bottom-10 has-margin-top-50"
+                    )
+                    paper_table_partial = html.Div(children="")
+
+                if len(full_matches) == 0:
+                    overhead_label = html.Div(
+                        [
+                            html.Div(
+                                f"Found no exact matches",
+                                className=common_label_classname
+                            ),
+                            html.Div(
+                                f"No exact matches found. Using partial matches only.",
+                                className="is-size-5 has-text-weight-bold"
+                            )
+                        ]
+                    )
+                    results_elements = [partial_label, paper_table_partial]
+                else:
+                    if len(full_matches) == 1:
+                        overhead_label = html.Div(
+                            f"Found {len(full_matches)} exact match",
+                            className=common_label_classname
+                        )
+                    else:
+                        overhead_label = html.Div(
+                            f"Found {len(full_matches)} exact matches",
+                            className=common_label_classname
+                        )
+                    full_label = html.Div(
+                        f"Exact matches",
+                        className=common_label_classname
+                    )
+                    full_matches_results = [format_result_html(
+                        match) for match in full_matches]
+                    paper_table_full = html.Table(
+                        full_matches_results,
+                        className="table is-fullwidth is-bordered is-hoverable is-narrow is-striped",
+                    )
+
+                    results_elements = [
+                        full_label, paper_table_full, partial_label, paper_table_partial]
+            else:
+                formatted_results = [format_result_html(
+                    match) for match in full_matches]
+                formatted_results += [format_result_html(
+                    match) for match in partial_matches]
+
+            # entities_keys = []
+            # for e in valid_entity_filters:
+            #     color = entity_color_map[e]
+            #     entity_colored = html.Div(
+            #         e,
+            #         className=f"msweb-is-{color}-txt is-size-5 has-text-weight-bold",
+            #     )
+            #     entity_key = html.Div(
+            #         entity_colored, className=f"box has-padding-5"
+            #     )
+            #     entity_key_container = html.Div(
+            #         entity_key, className="flex-column is-narrow has-margin-5"
+            #     )
+            #     entities_keys.append(entity_key_container)
+            # entity_key_container = html.Div(
+            #     entities_keys, className="columns is-multiline has-margin-5"
+            # )
 
         return html.Div(
             [
@@ -282,12 +280,30 @@ def results_html(results_dict, max_results_shown=30, full_match_threshold=10):
         )
 
 
-def get_all():
+def display_all_html(results):
     common_label_classname = "has-margin-top-10 has-margin-bottom-10 is-size-3 has-text-weight-semibold"
 
     overhead_label = html.Div(
-        "Showing all submissions",
+        "Showing all submitted documents:",
         className=common_label_classname
+    )
+
+    full_matches_results = [format_result_html(
+        match) for match in results]
+
+    results_elements = html.Table(
+        full_matches_results,
+        className="table is-fullwidth is-bordered is-hoverable is-narrow is-striped",
+    )
+
+    return html.Div(
+        [
+            overhead_label,
+            html.Div(
+                results_elements
+            ),
+        ],
+        className="has-margin-top-20 has-margin-bottom-20 msweb-fade-in"
     )
 
 """
@@ -363,7 +379,12 @@ def format_result_html(result):
             result.
     """
 
-    title_link = html.A(result["doi"], href=result["link"], target="_blank")
+    metadata = result["crossref_metadata"]
+
+    if metadata is None:
+        metadata = {}
+
+    title_link = html.A(metadata.get("title", result["link"]), href=result["link"], target="_blank")
 
     title = html.Div(
         title_link, className="is-size-4 has-text-link has-text-weight-bold"
@@ -373,16 +394,38 @@ def format_result_html(result):
     characters_remaining = 90  # max line length
     characters_remaining -= 5  # spaces, '-', and ','
 
-    year = result.get("year", 2020)
-    characters_remaining -= 4
+    date = metadata.get("created", None)
+    if date is not None:
+        date_iso = date["date-time"]
+        date = date_iso[5:7] + "/" + date_iso[8:10] + "/" + date_iso[0:4]
+    else:
+        date = ""
+    characters_remaining -= len(date)
 
-    journal = result.get("journal", "")
+    journal = metadata.get("container-title", "")
+    short_journal = metadata.get("short-container-title", "")
+    if isinstance(journal, list) and len(journal) > 0:
+        journal = journal[0]
+    else:
+        journal = ""
+
+    if isinstance(short_journal, list) and len(short_journal) > 0:
+        short_journal = short_journal[0]
+    else:
+        short_journal = ""
+
+    if len(journal) == 0 and len(short_journal) > 0:
+        journal = short_journal
+
     if len(journal) > 20:
-        journal = journal if len(journal) < 33 else journal[0:30] + "..."
+        if len(short_journal) > 0:
+            journal = short_journal
+        else:
+            journal = journal[0:30] + "..."
     characters_remaining -= len(journal)
 
-    authors = result.get("authors", "")
-    full_author_list = authors.split(", ")
+    authors_obj = metadata.get("author", "")
+    full_author_list = [author.get("given", "") + " " + author.get("family", "") for author in authors_obj]
     num_authors = len(full_author_list)
     reduced_author_list = []
     while len(full_author_list) > 0:
@@ -394,9 +437,9 @@ def format_result_html(result):
     if len(reduced_author_list) < num_authors:
         authors += "..."
 
-    ajy = "{} - {}, {}".format(authors, journal, year)
+    ajy = "{} - {}, {}".format(authors, journal, date)
     authors_journal_and_year = html.Div(
-        ajy, className="is-size-5 msweb-is-dark-green-txt"
+        ajy, className="is-size-5 msweb-is-green-txt "
     )
 
     abstract_txt = result["abstract"]
@@ -426,7 +469,8 @@ def format_result_html(result):
     #         entities.append(entity_container)
 
     keywords = html.Div(
-        ",".join(result["keywords"]), className="columns is-multiline has-margin-5"
+        ",".join(result["keywords"]),
+        className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-midnightblue"
     )
 
     keywords_label = html.Div(
