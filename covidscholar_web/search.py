@@ -6,7 +6,9 @@ import datetime
 import requests
 import json
 
+
 from covidscholar_web.constants import max_results
+
 
 def search_abstracts(text, limit=max_results):
     """
@@ -32,8 +34,7 @@ def get_all(limit=max_results):
 
     """
     response = requests.get(os.environ["COVID_API_ENDPOINT"] + "/submissions")
-    print(response)
     return_dict = json.loads(response.text)
-    # return return_dict
-    return {"full": [], "partial": []}
+    return return_dict
+
 

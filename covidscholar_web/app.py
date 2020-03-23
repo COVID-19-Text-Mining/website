@@ -108,11 +108,12 @@ app.layout = core_view
 def show_search_results(input_n_submit, text):
     # all_n_searches = [0 if n is None else n for n in [go_button_n_clicks, input_n_submit]]
     if input_n_submit is not None:
+        print("doing search")
         if text is None:
             results = display_all_html(search.get_all())
         else:
             abstracts = search.search_abstracts(text, limit=max_results)
-            print(abstracts)
+            print(len(abstracts["full"]), len(abstracts["partial"]))
             results = results_html(abstracts)
         return results
     # else:
