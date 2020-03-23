@@ -3,7 +3,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 from dash.dependencies import Input, Output, State
 
-from covidscholar_web.view import footer_html, query_helpers_html, results_html, display_all_html
+from covidscholar_web.view import footer_html, query_helpers_html, results_html, display_all_html, most_recent_html
 import covidscholar_web.search as search
 from covidscholar_web.constants import *
 
@@ -107,7 +107,12 @@ app.layout = core_view
 )
 def show_search_results(input_n_submit, text):
     # all_n_searches = [0 if n is None else n for n in [go_button_n_clicks, input_n_submit]]
-    if input_n_submit is not None:
+    if input_n_submit is None:
+        #On page load show the most recent papers
+        most_recent = search.most_recent()
+        results = most_recent_html(most_recent)
+        return results
+    else:
         print("doing search")
         if text is None:
             results = display_all_html(search.get_all())
@@ -122,6 +127,7 @@ def show_search_results(input_n_submit, text):
     #     results = display_all_html(search.get_all())
     #     return results
 
+    
 # @app.callback([Output("modal{}".format(i), "style") for i in range(max_results)],
 #               [Input("similar_display_button{}".format(i), 'n_clicks')
 #                for i in range(max_results)]

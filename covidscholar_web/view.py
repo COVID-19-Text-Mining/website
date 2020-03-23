@@ -279,6 +279,48 @@ def results_html(results_dict, max_results_shown=30, full_match_threshold=10, sh
             className="has-margin-top-20 has-margin-bottom-20 msweb-fade-in"
         )
 
+def most_recent_html(results):
+    """
+    Get the html block for the most recent results
+
+    Args:
+        results (list of dict): List of results_dict
+
+    Returns:
+        (dash_html_components.Div): The results_dict results html block.
+
+    """
+
+
+    if len(results) == 0:
+        return no_results_html()
+    else:
+        common_label_classname = "has-margin-top-10 has-margin-bottom-10 is-size-3 has-text-weight-semibold"
+
+        overhead_label = html.Div(
+            f"Most Recent Submissions",
+            className=common_label_classname
+        )
+
+        formatted_results = [format_result_html(
+            result) for result in results]
+        paper_table = html.Table(
+            formatted_results,
+            className="table is-fullwidth is-bordered is-hoverable is-narrow is-striped",
+        )
+        results_elements = [paper_table]
+
+        return html.Div(
+            [
+                overhead_label,
+                html.Div(
+                    results_elements
+                ),
+            ],
+            className="has-margin-top-20 has-margin-bottom-20 msweb-fade-in"
+        )
+
+
 
 def display_all_html(results):
     common_label_classname = "has-margin-top-10 has-margin-bottom-10 is-size-3 has-text-weight-semibold"

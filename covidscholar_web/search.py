@@ -37,4 +37,13 @@ def get_all(limit=max_results):
     return_dict = json.loads(response.text)
     return return_dict
 
+def most_recent():
+    """
+    Return the most recent submissions.
+
+    """
+    response = requests.get(os.environ["COVID_API_ENDPOINT"] + "/most_recent")
+    return_dict = json.loads(response.text)
+    return return_dict
+
 
