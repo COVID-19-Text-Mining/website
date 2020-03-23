@@ -6,15 +6,7 @@ import datetime
 import requests
 import json
 
-
 from covidscholar_web.constants import max_results
-
-client = pymongo.MongoClient(host=os.getenv('COVID_HOST'),
-                             username=os.getenv('COVID_USER'),
-                             password=os.getenv('COVID_PASS'),
-                             authSource=os.getenv('COVID_DB'))
-db = client[os.getenv('COVID_DB')]
-
 
 def search_abstracts(text, limit=max_results):
     """
