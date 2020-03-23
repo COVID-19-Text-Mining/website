@@ -34,7 +34,7 @@ logo = html.Div(
             src="/assets/covidscholar_logo.png",
             style={"width": "400px", "height": "150px"}
         ),
-        href="https://www.mrs.org/fall2019",
+        href="https://innovativegenomics.org",
         target="_blank"
     )
 )
