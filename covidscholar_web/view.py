@@ -379,12 +379,7 @@ def format_result_html(result):
             result.
     """
 
-    metadata = result["crossref_metadata"]
-
-    if metadata is None:
-        metadata = {}
-
-    title_link = html.A(metadata.get("title", result["link"]), href=result["link"], target="_blank")
+    title_link = html.A(result['title'], href=result["link"], target="_blank")
 
     title = html.Div(
         title_link, className="is-size-4 has-text-link has-text-weight-bold"
@@ -394,28 +389,34 @@ def format_result_html(result):
     characters_remaining = 90  # max line length
     characters_remaining -= 5  # spaces, '-', and ','
 
-    date = metadata.get("created", None)
-    if date is not None:
-        date_iso = date["date-time"]
-        date = date_iso[5:7] + "/" + date_iso[8:10] + "/" + date_iso[0:4]
-    else:
+    try:
+        date = result['publication_date']
+    except KeyError:
         date = ""
+    # if date is not None:
+    #     date_iso = date["date-time"]
+    #     date = date_iso[5:7] + "/" + date_iso[8:10] + "/" + date_iso[0:4]
+    # else:
+    #     date = ""
     characters_remaining -= len(date)
 
-    journal = metadata.get("container-title", "")
-    short_journal = metadata.get("short-container-title", "")
-    if isinstance(journal, list) and len(journal) > 0:
-        journal = journal[0]
-    else:
-        journal = ""
 
-    if isinstance(short_journal, list) and len(short_journal) > 0:
-        short_journal = short_journal[0]
-    else:
-        short_journal = ""
+    journal = result.get('journal',"")
+    short_journal = ""
+    # journal = metadata.get("container-title", "")
+    # short_journal = metadata.get("short-container-title", "")
+    # if isinstance(journal, list) and len(journal) > 0:
+    #     journal = journal[0]
+    # else:
+    #     journal = ""
 
-    if len(journal) == 0 and len(short_journal) > 0:
-        journal = short_journal
+    # if isinstance(short_journal, list) and len(short_journal) > 0:
+    #     short_journal = short_journal[0]
+    # else:
+    #     short_journal = ""
+
+    # if len(journal) == 0 and len(short_journal) > 0:
+    #     journal = short_journal
 
     if len(journal) > 20:
         if len(short_journal) > 0:
@@ -424,8 +425,8 @@ def format_result_html(result):
             journal = journal[0:30] + "..."
     characters_remaining -= len(journal)
 
-    authors_obj = metadata.get("author", "")
-    full_author_list = [author.get("given", "") + " " + author.get("family", "") for author in authors_obj]
+    authors_obj = result.get('authors',[])
+    full_author_list = [author.get("name", "") for author in authors_obj]
     num_authors = len(full_author_list)
     reduced_author_list = []
     while len(full_author_list) > 0:

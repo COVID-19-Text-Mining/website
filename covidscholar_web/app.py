@@ -113,6 +113,7 @@ def show_search_results(input_n_submit, text):
             results = display_all_html(search.get_all())
         else:
             abstracts = search.search_abstracts(text, limit=max_results)
+            # print(abstracts)
             print(len(abstracts["full"]), len(abstracts["partial"]))
             results = results_html(abstracts)
         return results
