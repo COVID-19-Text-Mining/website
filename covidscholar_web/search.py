@@ -24,7 +24,7 @@ def search_abstracts(text, limit=max_results):
                 Partial Matches
     """
 
-    response = requests.post(os.environ["COVID_API_ENDPOINT"] + "/search/", data={"text": text, "limit": limit})
+    response = requests.post(os.environ["COVID_API_ENDPOINT"] + "/search/", params={"text": text, "limit": limit})
     return_dict = json.loads(response.text)
     return return_dict
 
