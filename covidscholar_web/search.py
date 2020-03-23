@@ -34,6 +34,6 @@ def get_all(limit=max_results):
     response = requests.get(os.environ["COVID_API_ENDPOINT"] + "/submissions")
     print(response)
     return_dict = json.loads(response.text)
-    return return_dict
-
+    # return return_dict
+    return {"full": [], "partial": []}
 
