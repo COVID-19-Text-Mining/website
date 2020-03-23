@@ -1,2 +1,3 @@
-# website
-Website for covidscholar.com
+# covidscholar_web
+
+Hosted at https://covidscholar.com
