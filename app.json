@@ -1,0 +1,33 @@
+{
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "env": {
+    "COVID_DB": {
+      "required": true
+    },
+    "COVID_USER": {
+      "required": true
+    },
+    "COVID_PASS": {
+      "required": true
+    },
+    "COVID_HOST": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "covidsholar-web",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
