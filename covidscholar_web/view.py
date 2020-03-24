@@ -46,8 +46,9 @@ def query_helpers_html():
     # )
 
     selectors = html.Div(
-        [],
-        className="columns is-centered is-vcentered"
+        [html.A("Help this effort by submitting document summaries and keywords",
+                href="http://submissions.covidscholar.com", target="_blank")],
+        className="columns is-centered is-vcentered has-margin-top-10"
     )
 
     return html.Div(
@@ -58,7 +59,6 @@ def query_helpers_html():
             input_row,
             selectors
         ],
-
     )
 
 
@@ -298,7 +298,7 @@ def most_recent_html(results):
         common_label_classname = "has-margin-top-10 has-margin-bottom-10 is-size-3 has-text-weight-semibold"
 
         overhead_label = html.Div(
-            f"Most Recent Submissions",
+            f"Recently submitted to the repository",
             className=common_label_classname
         )
 
@@ -432,7 +432,7 @@ def format_result_html(result):
     characters_remaining -= 5  # spaces, '-', and ','
 
     try:
-        date = result['publication_date']
+        date = result['publication_date'][0:10]
     except KeyError:
         date = ""
     # if date is not None:
@@ -486,17 +486,7 @@ def format_result_html(result):
     )
 
     abstract_txt = result["abstract"]
-    abstract = html.Div(abstract_txt, className="is-size-6")
-
-    label_mapping = {
-        "material": "MAT_summary",
-        "application": "APL_summary",
-        "property": "PRO_summary",
-        "phase": "SPL_summary",
-        "synthesis": "SMT_summary",
-        "characterization": "CMT_summary",
-        "descriptor": "DSC_summary",
-    }
+    abstract = html.Div(abstract_txt, className="is-size-6 has-margin-5")
 
     # entities = []
     # for f in valid_entity_filters:
@@ -511,21 +501,21 @@ def format_result_html(result):
     #         )
     #         entities.append(entity_container)
 
-    keywords = html.Div(
-        ",".join(result["keywords"]),
-        className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-midnightblue"
-    )
-
-    keywords_label = html.Div(
-        "Keywords:", className="has-margin-5 has-text-weight-bold"
-    )
-
     summary = html.Div(
-        result["summary_human"], className="columns is-multiline has-margin-5"
+        result["summary_human"], className="columns is-multiline has-margin-5 msweb-is-purple-txt"
     )
 
     summary_label = html.Div(
-        "Summary:", className="has-margin-5 has-text-weight-bold"
+        "User-submitted summary:", className="has-margin-5 has-text-weight-bold"
+    )
+
+    keywords = html.Div(
+        ",".join(result["keywords"]),
+        className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
+    )
+
+    keywords_label = html.Div(
+        "User-submitted keywords:", className="has-margin-5 has-text-weight-bold"
     )
 
     paper_div = html.Div(

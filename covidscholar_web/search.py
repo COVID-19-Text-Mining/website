@@ -44,6 +44,7 @@ def most_recent():
     """
     response = requests.get(os.environ["COVID_API_ENDPOINT"] + "/most_recent")
     return_dict = json.loads(response.text)
+    print(os.environ["COVID_API_ENDPOINT"] + "/most_recent")
     return return_dict
 
 
