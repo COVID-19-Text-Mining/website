@@ -113,7 +113,6 @@ def show_search_results(input_n_submit, text):
         results = most_recent_html(most_recent)
         return results
     else:
-        print("doing search")
         if text is None:
             most_recent = search.most_recent()
             results = most_recent_html(most_recent)

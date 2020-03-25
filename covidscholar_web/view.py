@@ -73,10 +73,11 @@ def footer_html():
     note_div = html.Div(
         [
             dcc.Markdown(
-                "This website uses natural language processing (NLP) to power search on a set of research papers related to COVID-19.'"
-                " This search tool is powered [Matscholar Beta](https://www.matscholar.com), a research effort led by the [HackingMaterials](https://hackingmaterials.lbl.gov), "
-                " [Persson](https://perssongroup.lbl.gov) and [Ceder](https://ceder.berkeley.edu) research "
-                "groups at the Lawrence Berkeley National Lab. Virus icon made by Freepik from www.flaticon.com",
+                "This website uses natural language processing (NLP) to power search on a set of research papers related to COVID-19."
+                " It was created by the team behind [Matscholar](https://www.matscholar.com), a research effort led by the [HackingMaterials](https://hackingmaterials.lbl.gov), "
+                " [Persson](https://perssongroup.lbl.gov), and [Ceder](https://ceder.berkeley.edu) research"
+                " groups at Lawrence Berkeley National Lab."
+                " The virus icon in our logo was made by Freepik from www.flaticon.com",
                 className="column is-half is-size-6"
             )
         ],
@@ -513,7 +514,7 @@ def format_result_html(result):
         # summary = "\n__________________\n".join(summary)
 
         summary_label = html.Div(
-            "User-submitted {}:".format("summary" if len(summary) == 0 else "summaries"),
+            "User-submitted {}:".format("summary" if (len(summary) == 1) else "summaries"),
             className="has-margin-5 has-text-weight-bold"
         )
 
