@@ -421,7 +421,14 @@ def format_result_html(result):
             result.
     """
 
-    title_link = html.A(result['title'], href=result["link"], target="_blank")
+    title = result['title']
+
+    if title is None or len(title) == 0:
+        title = result['doi']
+        if title is None or len(title) == 0:
+            title = result['link']
+
+    title_link = html.A(title, href=result["link"], target="_blank")
 
     title = html.Div(
         title_link, className="is-size-4 has-text-link has-text-weight-bold"

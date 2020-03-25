@@ -34,8 +34,7 @@ logo = html.Div(
             src="/assets/covidscholar_logo.png",
             style={"width": "400px", "height": "150px"}
         ),
-        href="http://www.covidscholar.com",
-        target="_blank"
+        href="http://www.covidscholar.com"
     )
 )
 
