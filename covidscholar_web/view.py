@@ -43,7 +43,7 @@ def query_helpers_html():
 
     selectors = html.Div(
         [html.A("Help this effort by submitting document summaries and keywords",
-                href="http://submissions.covidscholar.com", target="_blank")],
+                href="https://docs.google.com/forms/d/e/1FAIpQLSf4z7LCBizCs6pUgO3UyfxJMCAVC-bRh3cvW7uNghDu4UeBig/viewform?usp=sf_link", target="_blank")],
         className="columns is-centered is-vcentered has-margin-top-10"
     )
 
