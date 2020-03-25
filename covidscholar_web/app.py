@@ -115,7 +115,8 @@ def show_search_results(input_n_submit, text):
     else:
         print("doing search")
         if text is None:
-            results = display_all_html(search.most_recent())
+            most_recent = search.most_recent()
+            results = most_recent_html(most_recent)
         else:
             abstracts = search.search_abstracts(text, limit=max_results, collection="entries")
             # print(abstracts)
