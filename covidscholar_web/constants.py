@@ -1,7 +1,7 @@
 import copy
 
 # this is only for searching, not displaying, and should be as high as possible
-max_results = 500
+max_results = 30
 
 # The mapping of entity type to shortcode
 entity_shortcode_map = {
