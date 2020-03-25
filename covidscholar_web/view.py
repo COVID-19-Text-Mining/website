@@ -6,11 +6,7 @@ import pandas as pd
 from covidscholar_web.constants import *
 import random
 from datetime import datetime as dt
-
-ALL_TIMES = ['8:00 AM', '8:30 AM', '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM',
-             '12:30 PM', '1:00 PM', '1:30 PM', '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM', '4:30 PM',
-             '5:00 PM', '5:30 PM', '6:00 PM', '6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM']
-
+from urllib.parse import urlencode
 
 def query_helpers_html():
     input_box = html.Div(
@@ -279,6 +275,7 @@ def results_html(results_dict, max_results_shown=30, full_match_threshold=10, sh
             className="has-margin-top-20 has-margin-bottom-20 msweb-fade-in"
         )
 
+
 def most_recent_html(results):
     """
     Get the html block for the most recent results
@@ -291,14 +288,13 @@ def most_recent_html(results):
 
     """
 
-
     if len(results) == 0:
         return no_results_html()
     else:
         common_label_classname = "has-margin-top-10 has-margin-bottom-10 is-size-3 has-text-weight-semibold"
 
         overhead_label = html.Div(
-            f"Recently submitted to the repository",
+            f"Recently submitted to the repository (updates every ~15 min)",
             className=common_label_classname
         )
 
@@ -319,7 +315,6 @@ def most_recent_html(results):
             ],
             className="has-margin-top-20 has-margin-bottom-20 msweb-fade-in"
         )
-
 
 
 def display_all_html(results):
@@ -347,6 +342,7 @@ def display_all_html(results):
         ],
         className="has-margin-top-20 has-margin-bottom-20 msweb-fade-in"
     )
+
 
 """
 Internal Functions
@@ -421,10 +417,10 @@ def format_result_html(result):
             result.
     """
 
-    title = result['title']
+    title = result.get("title", None)
 
     if title is None or len(title) == 0:
-        title = result['doi']
+        title = result.get("doi", None)
         if title is None or len(title) == 0:
             title = result['link']
 
@@ -438,10 +434,12 @@ def format_result_html(result):
     characters_remaining = 90  # max line length
     characters_remaining -= 5  # spaces, '-', and ','
 
-    try:
-        date = result['publication_date'][0:10]
-    except KeyError:
+    date = result.get('publication_date', None)
+    if date is None:
         date = ""
+    if len(date) > 10:
+        date = date[0:10]
+
     # if date is not None:
     #     date_iso = date["date-time"]
     #     date = date_iso[5:7] + "/" + date_iso[8:10] + "/" + date_iso[0:4]
@@ -449,8 +447,12 @@ def format_result_html(result):
     #     date = ""
     characters_remaining -= len(date)
 
+    journal = result.get("journal", "")
+    if journal is None or len(journal) == 0:
+        journal = ""
+    if isinstance(journal, list):
+        journal = journal[0]
 
-    journal = result.get('journal',"")
     short_journal = ""
     # journal = metadata.get("container-title", "")
     # short_journal = metadata.get("short-container-title", "")
@@ -474,8 +476,13 @@ def format_result_html(result):
             journal = journal[0:30] + "..."
     characters_remaining -= len(journal)
 
-    authors_obj = result.get('authors',[])
-    full_author_list = [author.get("name", "") for author in authors_obj]
+    authors_obj = result.get('authors', [])
+    full_author_list = []
+    for author in authors_obj:
+        if "name" in author:
+            full_author_list.append(author["name"])
+        elif "Name" in author:
+            full_author_list.append(author["Name"])
     num_authors = len(full_author_list)
     reduced_author_list = []
     while len(full_author_list) > 0:
@@ -487,7 +494,10 @@ def format_result_html(result):
     if len(reduced_author_list) < num_authors:
         authors += "..."
 
-    ajy = "{} - {}, {}".format(authors, journal, date)
+    conditional_dash = " - " if len(journal) > 0 else ""
+    conditional_comma = ", " if len(date) > 0 else ""
+
+    ajy = f"{authors}{conditional_dash}{journal}{conditional_comma}{date}"
     authors_journal_and_year = html.Div(
         ajy, className="is-size-5 msweb-is-green-txt "
     )
@@ -495,40 +505,53 @@ def format_result_html(result):
     abstract_txt = result["abstract"]
     abstract = html.Div(abstract_txt, className="is-size-6 has-margin-5")
 
-    # entities = []
-    # for f in valid_entity_filters:
-    #     for e in result[label_mapping[f]]:
-    #         color = entity_color_map[f]
-    #         ent_txt = html.Span(
-    #             e, className=f"msweb-is-{color}-txt has-text-weight-semibold"
-    #         )
-    #         entity = html.Div(ent_txt, className="box has-padding-5")
-    #         entity_container = html.Div(
-    #             entity, className="flex-column is-narrow has-margin-5"
-    #         )
-    #         entities.append(entity_container)
+    summary = result.get("summary_human", "")
+    if summary is not None and len(summary) > 0:
 
-    summary = html.Div(
-        result["summary_human"], className="columns is-multiline has-margin-5 msweb-is-purple-txt"
-    )
+        summary_label = html.Div(
+            "User-submitted summary:", className="has-margin-5 has-text-weight-bold"
+        )
 
-    summary_label = html.Div(
-        "User-submitted summary:", className="has-margin-5 has-text-weight-bold"
-    )
+        summary = html.Div(summary, className="columns is-multiline has-margin-5 msweb-is-purple-txt")
+        keywords_label = html.Div(
+            "User-submitted keywords:", className="has-margin-5 has-text-weight-bold"
+        )
 
-    keywords = html.Div(
-        ",".join(result["keywords"]),
-        className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
-    )
+        keywords = html.Div(
+            ",".join(result["keywords"]),
+            className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
+        )
 
-    keywords_label = html.Div(
-        "User-submitted keywords:", className="has-margin-5 has-text-weight-bold"
-    )
+        paper_div = html.Div(
+            [title, authors_journal_and_year, abstract, summary_label, summary, keywords_label, keywords],
+            className="has-margin-10",
+        )
+    else:
 
-    paper_div = html.Div(
-        [title, authors_journal_and_year, abstract, summary_label, summary, keywords_label, keywords],
-        className="has-margin-10",
-    )
+        summary_label = html.Div(
+            "No user-submitted summary available:", className="has-margin-5 has-text-weight-bold"
+        )
+
+        # generate pre-filled link to Google Form
+        gf_link_parameters = {"link": "entry.101149199",
+                              "doi": "entry.1258141481",
+                              "abstract": "entry.112702407",
+                              }
+
+        gf_link_prefilled = "https://docs.google.com/forms/d/e/1FAIpQLSf4z7LCBizCs6pUgO3UyfxJMCAVC-bRh3cvW7uNghDu4UeBig/viewform?usp=pp_url&"
+        params = {}
+        for key in gf_link_parameters:
+            if key in result and not (result[key] is None) and len(result[key]) > 0:
+                params[gf_link_parameters[key]] = result[key]
+        summary = html.A("Submit a summary for this article.",
+                         href=gf_link_prefilled+urlencode(params),
+                         target="_blank",
+                         className="a has-margin-10 msweb-is-red-link ")
+
+        paper_div = html.Div(
+            [title, authors_journal_and_year, abstract, summary_label, summary],
+            className="has-margin-10",
+        )
 
     table_cell = html.Td(paper_div)
     return html.Tr(table_cell)
@@ -705,5 +728,3 @@ def format_expandable_abstract(abstract_txt):
         ]
     )
     return details
-
-

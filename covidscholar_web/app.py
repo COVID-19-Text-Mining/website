@@ -34,7 +34,8 @@ logo = html.Div(
             src="/assets/covidscholar_logo.png",
             style={"width": "400px", "height": "150px"}
         ),
-        href="http://www.covidscholar.com"
+        href="http://www.covidscholar.com",
+        target="_self",
     )
 )
 
@@ -116,17 +117,13 @@ def show_search_results(input_n_submit, text):
         if text is None:
             results = display_all_html(search.get_all())
         else:
-            abstracts = search.search_abstracts(text, limit=max_results)
+            abstracts = search.search_abstracts(text, limit=max_results, collection="search")
             # print(abstracts)
             print(len(abstracts["full"]), len(abstracts["partial"]))
             results = results_html(abstracts)
         return results
-    # else:
-    #     print("doing get all")
-    #     results = display_all_html(search.get_all())
-    #     return results
 
-    
+
 # @app.callback([Output("modal{}".format(i), "style") for i in range(max_results)],
 #               [Input("similar_display_button{}".format(i), 'n_clicks')
 #                for i in range(max_results)]

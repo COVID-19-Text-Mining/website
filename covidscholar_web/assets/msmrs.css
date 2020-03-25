@@ -39,6 +39,11 @@
     color: red;
 }
 
+.msweb-is-red-link {
+    color: red;
+    text-decoration: underline;
+}
+
 .msweb-is-blue-txt {
     color: darkblue;
 }
