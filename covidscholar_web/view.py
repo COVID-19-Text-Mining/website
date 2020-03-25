@@ -143,8 +143,8 @@ def results_html(results_dict, max_results_shown=30, full_match_threshold=10, sh
 
     """
 
-    partial_matches = results_dict["partial"]
-    full_matches = results_dict["full"]
+    partial_matches = [r for r in results_dict["partial"] if "error" not in r]
+    full_matches = [r for r in results_dict["full"] if "error" not in r]
     all_matches = partial_matches + full_matches
 
     if len(all_matches) == 0:
@@ -507,18 +507,24 @@ def format_result_html(result):
 
     summary = result.get("summary_human", "")
     if summary is not None and len(summary) > 0:
+        if isinstance(summary, str):
+            summary = [summary]
+
+        # summary = "\n__________________\n".join(summary)
 
         summary_label = html.Div(
-            "User-submitted summary:", className="has-margin-5 has-text-weight-bold"
+            "User-submitted {}:".format("summary" if len(summary) == 0 else "summaries"),
+            className="has-margin-5 has-text-weight-bold"
         )
 
-        summary = html.Div(summary, className="columns is-multiline has-margin-5 msweb-is-purple-txt")
+        summary = html.Div([html.Div(s, className="columns is-multiline has-margin-5 msweb-is-purple-txt") for s in summary])
+
         keywords_label = html.Div(
             "User-submitted keywords:", className="has-margin-5 has-text-weight-bold"
         )
 
         keywords = html.Div(
-            ",".join(result["keywords"]),
+            ", ".join(result["keywords"]),
             className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
         )
 

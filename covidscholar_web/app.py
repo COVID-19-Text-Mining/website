@@ -117,7 +117,7 @@ def show_search_results(input_n_submit, text):
         if text is None:
             results = display_all_html(search.get_all())
         else:
-            abstracts = search.search_abstracts(text, limit=max_results, collection="search")
+            abstracts = search.search_abstracts(text, limit=max_results, collection="entries")
             # print(abstracts)
             print(len(abstracts["full"]), len(abstracts["partial"]))
             results = results_html(abstracts)
