@@ -9,7 +9,7 @@ import json
 from covidscholar_web.constants import max_results
 
 
-def search_abstracts(text, limit=30, collection="entries"):
+def search_abstracts(text, limit=30, collection="search"):
     """
     Search the database
 
