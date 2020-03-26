@@ -8,6 +8,7 @@ import random
 from datetime import datetime as dt
 from urllib.parse import urlencode
 
+
 def query_helpers_html():
     covid19_only_toggle = covid19_only_toggle_html()
 
@@ -47,7 +48,8 @@ def query_helpers_html():
 
     selectors = html.Div(
         [html.A("Help this effort by submitting document summaries and keywords",
-                href="https://docs.google.com/forms/d/e/1FAIpQLSf4z7LCBizCs6pUgO3UyfxJMCAVC-bRh3cvW7uNghDu4UeBig/viewform?usp=sf_link", target="_blank")],
+                href="https://docs.google.com/forms/d/e/1FAIpQLSf4z7LCBizCs6pUgO3UyfxJMCAVC-bRh3cvW7uNghDu4UeBig/viewform?usp=sf_link",
+                target="_blank")],
         className="columns is-centered is-vcentered has-margin-top-10"
     )
 
@@ -522,21 +524,39 @@ def format_result_html(result):
             className="has-margin-5 has-text-weight-bold"
         )
 
-        summary = html.Div([html.Div(s, className="columns is-multiline has-margin-5 msweb-is-purple-txt") for s in summary])
+        summary = html.Div(
+            [html.Div(s, className="columns is-multiline has-margin-5 msweb-is-purple-txt") for s in summary])
 
-        keywords_label = html.Div(
+        keywords_human_label = html.Div(
             "User-submitted keywords:", className="has-margin-5 has-text-weight-bold"
         )
 
-        keywords = html.Div(
+        keywords_human = html.Div(
             ", ".join(result["keywords"]),
             className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
         )
 
+        if "keywords_ml" in result and len(result["keywords_ml"]):
+            keywords_ml_label = html.Div(
+                "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
+            )
+
+            keywords_ml = html.Div(
+                ", ".join(result["keywords_ml"][0:10])[0:300] + "...",
+                className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
+            )
+
+            paper_div = html.Div(
+                [title, authors_journal_and_year, abstract, summary_label, summary, keywords_human_label,
+                 keywords_human, keywords_ml_label, keywords_ml],
+                className="has-margin-10",
+            )
+
         paper_div = html.Div(
-            [title, authors_journal_and_year, abstract, summary_label, summary, keywords_label, keywords],
+            [title, authors_journal_and_year, abstract, summary_label, summary, keywords_human_label, keywords_human],
             className="has-margin-10",
         )
+
     else:
 
         summary_label = html.Div(
@@ -554,15 +574,37 @@ def format_result_html(result):
         for key in gf_link_parameters:
             if key in result and not (result[key] is None) and len(result[key]) > 0:
                 params[gf_link_parameters[key]] = result[key]
-        summary = html.A("Submit a summary for this article.",
-                         href=gf_link_prefilled+urlencode(params),
+
+        # If url with params is too long, delete the abstract
+        if len(gf_link_prefilled + urlencode(params)) > 2048:
+            del params[gf_link_parameters["abstract"]]
+
+        summary = html.A("Submit a summary for this article (or help fix a bad abstract).",
+                         href=gf_link_prefilled + urlencode(params),
                          target="_blank",
                          className="a has-margin-10 msweb-is-red-link ")
 
-        paper_div = html.Div(
-            [title, authors_journal_and_year, abstract, summary_label, summary],
-            className="has-margin-10",
-        )
+        if "keywords_ml" in result and len(result["keywords_ml"]):
+            keywords_ml_label = html.Div(
+                "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
+            )
+
+            keywords_ml = html.Div(
+                ", ".join(result["keywords_ml"])[0:300] + "...",
+                className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
+            )
+
+            paper_div = html.Div(
+                [title, authors_journal_and_year, abstract, summary_label, summary,
+                 keywords_ml_label, keywords_ml],
+                className="has-margin-10",
+            )
+
+        else:
+            paper_div = html.Div(
+                [title, authors_journal_and_year, abstract, summary_label, summary],
+                className="has-margin-10",
+            )
 
     table_cell = html.Td(paper_div)
     return html.Tr(table_cell)
