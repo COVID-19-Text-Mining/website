@@ -9,7 +9,7 @@ import json
 from covidscholar_web.constants import max_results
 
 
-def search_abstracts(text, limit=30, collection="entries"):
+def search_abstracts(text, limit=30, collection="entries", covid19_only=False):
     """
     Search the database
 
@@ -24,7 +24,7 @@ def search_abstracts(text, limit=30, collection="entries"):
     """
 
     response = requests.post(os.environ["COVID_API_ENDPOINT"] + f"/{collection}/",
-                             params={"text": text, "limit": limit})
+                             params={"text": text, "limit": limit, "covid19_only": covid19_only})
     return_dict = json.loads(response.text)
     return return_dict
 

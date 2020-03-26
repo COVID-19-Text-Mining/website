@@ -9,25 +9,29 @@ from datetime import datetime as dt
 from urllib.parse import urlencode
 
 def query_helpers_html():
+    covid19_only_toggle = covid19_only_toggle_html()
+
     input_box = html.Div(
-        dcc.Input(
+        [dcc.Input(
             id="main-input",
             className="input is-large is-rounded",
             placeholder="Enter search terms or keywords",
             autoFocus=True,
             style={
                 'inputmode': 'search'}
-        ),
+        )],
         className="column is-full"
     )
 
     input_row = html.Div(
         html.Div(
-            [input_box],
+            [input_box,
+            covid19_only_toggle],
             className="columns is-centered"
         ),
         className="has-margin-left-50 has-margin-right-50"
     )
+
 
     inner_label_styles = "is-size-4 has-text-weight-bold"
     outer_div_styles = "has-text-centered has-margin-10"
@@ -735,3 +739,14 @@ def format_expandable_abstract(abstract_txt):
         ]
     )
     return details
+
+def covid19_only_toggle_html():
+    toggle = daq.BooleanSwitch(
+                        id='covid19-only-bool',
+                        on=False,
+                        label="COVID19 Only",
+                        labelPosition="top",
+                        className="flex-column is-fluid has-margin-right-10 has-margin-left-10"
+                    )   
+
+    return html.Div(toggle, className="columns is-multiline is-fluid has-margin-right-10 has-margin-left-10")
