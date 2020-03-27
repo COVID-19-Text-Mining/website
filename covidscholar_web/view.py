@@ -442,8 +442,21 @@ def format_result_html(result):
     characters_remaining -= 5  # spaces, '-', and ','
 
     date = result.get('publication_date', None)
-    if date is None:
-        date = ""
+    datestring = ""
+    if date is not None:
+        #Don't look for more precise time units if we don't have broader ones
+        if result.get('has_year', False):
+            datestring = date[6:10]
+            if result.get('has_month', False):
+                month = date[0:2]
+                if result.get('has_day', False):
+                    #Why are Americans like this?
+                    datestring = "{}/{}/{}".format(month, date[3:5], datestring)
+                else:
+                    datestring = "{}/{}".format(month, datestring)
+
+    date = datestring
+
     if len(date) > 10:
         date = date[0:10]
 
@@ -536,13 +549,13 @@ def format_result_html(result):
             className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
         )
 
-        if "keywords_ml" in result and len(result["keywords_ml"]):
+        if "keywords_ML" in result and len(result["keywords_ML"]):
             keywords_ml_label = html.Div(
                 "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
             )
 
             keywords_ml = html.Div(
-                ", ".join(result["keywords_ml"][0:10])[0:300] + "...",
+                ", ".join(result["keywords_ML"][0:10])[0:300] + "...",
                 className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
             )
 
@@ -584,13 +597,13 @@ def format_result_html(result):
                          target="_blank",
                          className="a has-margin-10 msweb-is-red-link ")
 
-        if "keywords_ml" in result and len(result["keywords_ml"]):
+        if "keywords_ML" in result and len(result["keywords_ML"]):
             keywords_ml_label = html.Div(
                 "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
             )
 
             keywords_ml = html.Div(
-                ", ".join(result["keywords_ml"])[0:300] + "...",
+                ", ".join(result["keywords_ML"])[0:300] + "...",
                 className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
             )
 
