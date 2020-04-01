@@ -273,7 +273,7 @@ def most_recent_html(results):
         common_label_classname = "has-margin-top-10 has-margin-bottom-10 is-size-3 has-text-weight-semibold"
 
         overhead_label = html.Div(
-            f"Recently Papers",
+            f"Recently Published",
             className=common_label_classname
         )
 
