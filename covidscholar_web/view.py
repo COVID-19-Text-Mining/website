@@ -10,21 +10,24 @@ from covidscholar_web.result import format_result_html
 
 
 def query_helpers_html():
+    covid19_only_toggle = covid19_only_toggle_html()
+
     input_box = html.Div(
-        dcc.Input(
+        [dcc.Input(
             id="main-input",
             className="input is-large is-rounded",
             placeholder="Enter search terms or keywords",
             autoFocus=True,
             style={
                 'inputmode': 'search'}
-        ),
+        )],
         className="column is-full"
     )
 
     input_row = html.Div(
         html.Div(
-            [input_box],
+            [input_box,
+             covid19_only_toggle],
             className="columns is-centered"
         ),
         className="has-margin-left-50 has-margin-right-50"
@@ -270,7 +273,7 @@ def most_recent_html(results):
         common_label_classname = "has-margin-top-10 has-margin-bottom-10 is-size-3 has-text-weight-semibold"
 
         overhead_label = html.Div(
-            f"Recently submitted to the repository (updates every ~15 min)",
+            f"Recently Papers",
             className=common_label_classname
         )
 
@@ -376,7 +379,6 @@ def divider_html():
 
     """
     return html.Div(html.Hr(className="is-divider"))
-
 
 
 def format_authors(author_list):
@@ -550,3 +552,15 @@ def format_expandable_abstract(abstract_txt):
         ]
     )
     return details
+
+
+def covid19_only_toggle_html():
+    toggle = daq.BooleanSwitch(
+        id='covid19-only-bool',
+        on=False,
+        label="COVID19 Only",
+        labelPosition="top",
+        className="flex-column is-fluid has-margin-right-10 has-margin-left-10"
+    )
+
+    return html.Div(toggle, className="columns is-multiline is-fluid has-margin-right-10 has-margin-left-10")
