@@ -8,7 +8,7 @@ import covidscholar_web.search as search
 from covidscholar_web.constants import *
 
 external_scripts = [
-    "https://www.googletagmanager.com/gtag/js?id=UA-149443072-3"
+    "https://www.googletagmanager.com/gtag/js?id=UA-161614550-1"
 ]
 
 app = dash.Dash(__name__, external_scripts=external_scripts)
