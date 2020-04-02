@@ -120,7 +120,6 @@ def show_search_results(input_n_submit, input_covid19_only, text, covid19_only):
             results = most_recent_html(most_recent)
         else:
             abstracts = search.search_abstracts(text, limit=max_results, collection="entries", covid19_only=covid19_only)
-            # print(abstracts)
             results = results_html(abstracts)
         return results
 

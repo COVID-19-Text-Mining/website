@@ -152,13 +152,21 @@ def format_result_html(result):
             className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
         )
 
-        if "keywords_ml" in result and len(result["keywords_ml"]):
-            keywords_ml_label = html.Div(
+        if "keywords_ML" in result:
+            keywords_key = "keywords_ML"
+        elif "keywords_ml" in result:
+            keywords_key = "keywords_ml"
+        else:
+            keywords_key = "keywords_ml"
+            result["keywords_ml"] = []
+
+        if len(result[keywords_key]):
+            keywords_ML_label = html.Div(
                 "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
             )
 
-            keywords_ml = html.Div(
-                ", ".join(result["keywords_ml"][0:10])[0:300] + "...",
+            keywords_ML = html.Div(
+                ", ".join(result["keywords_ML"][0:10])[0:300] + "...",
                 className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
             )
 
@@ -170,8 +178,8 @@ def format_result_html(result):
                  summary,
                  keywords_human_label,
                  keywords_human,
-                 keywords_ml_label,
-                 keywords_ml],
+                 keywords_ML_label,
+                 keywords_ML],
                 className="has-margin-10",
             )
 
@@ -214,19 +222,19 @@ def format_result_html(result):
                          target="_blank",
                          className="a has-margin-10 msweb-is-red-link ")
 
-        if "keywords_ml" in result and len(result["keywords_ml"]):
-            keywords_ml_label = html.Div(
+        if "keywords_ML" in result and len(result["keywords_ML"]):
+            keywords_ML_label = html.Div(
                 "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
             )
 
-            keywords_ml = html.Div(
-                ", ".join(result["keywords_ml"])[0:300] + "...",
+            keywords_ML = html.Div(
+                ", ".join(result["keywords_ML"])[0:300] + "...",
                 className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
             )
 
             paper_div = html.Div(
                 [title, authors_journal_and_year, abstract, summary_label, summary,
-                 keywords_ml_label, keywords_ml],
+                 keywords_ML_label, keywords_ML],
                 className="has-margin-10",
             )
 
