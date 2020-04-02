@@ -102,11 +102,12 @@ app.layout = core_view
 
 @app.callback(
     Output("results-area", "children"),
-    [Input("main-input", "n_submit")],
+    [Input("main-input", "n_submit"),
+     Input("covid19-only-bool", "on")],
     [State("main-input", "value"),
         State("covid19-only-bool", 'on')]
 )
-def show_search_results(input_n_submit, text, covid19_only):
+def show_search_results(input_n_submit, input_covid19_only, text, covid19_only):
     # all_n_searches = [0 if n is None else n for n in [go_button_n_clicks, input_n_submit]]
     if input_n_submit is None or text is None or text.strip() is "":
         #On page load show the most recent papers
@@ -120,7 +121,6 @@ def show_search_results(input_n_submit, text, covid19_only):
         else:
             abstracts = search.search_abstracts(text, limit=max_results, collection="entries", covid19_only=covid19_only)
             # print(abstracts)
-            print(len(abstracts["full"]), len(abstracts["partial"]))
             results = results_html(abstracts)
         return results
 
