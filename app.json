@@ -26,7 +26,7 @@
       "quantity": 1
     }
   },
-  "name": "covidsholar-web",
+  "name": "covidscholar-web",
   "scripts": {
   },
   "stack": "heroku-18"

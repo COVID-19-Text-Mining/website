@@ -222,13 +222,21 @@ def format_result_html(result):
                          target="_blank",
                          className="a has-margin-10 msweb-is-red-link ")
 
-        if "keywords_ML" in result and len(result["keywords_ML"]):
+        if "keywords_ML" in result:
+            keywords_key = "keywords_ML"
+        elif "keywords_ml" in result:
+            keywords_key = "keywords_ml"
+        else:
+            keywords_key = "keywords_ml"
+            result["keywords_ml"] = []
+
+        if len(result[keywords_key]):
             keywords_ML_label = html.Div(
                 "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
             )
 
             keywords_ML = html.Div(
-                ", ".join(result["keywords_ML"])[0:300] + "...",
+                ", ".join(result["keywords_ML"][0:10])[0:300] + "...",
                 className="columns is-multiline has-margin-5 has-text-weight-bold msweb-is-dimgray-txt"
             )
 
