@@ -230,7 +230,7 @@ def format_result_html(result):
             keywords_key = "keywords_ml"
             result["keywords_ml"] = []
 
-        if len(result[keywords_key]):
+        if result[keywords_key] is not None and len(result[keywords_key]):
             keywords_ML_label = html.Div(
                 "NLP-generated keywords:", className="has-margin-5 has-text-weight-bold"
             )
